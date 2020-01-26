@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Sarimo</title>
+</head>
+
+<body>
+  <figure class="highcharts-figure">
+    <div id="container"></div>
+    <p class="highcharts-description">
+      Sarimo is a a thing that does really cool sankey diagrams.
+    </p>
+  </figure>
+
+</body>
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/sankey.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/template.css') }}">
+<script>
+  var data = '{{shape}}'
+  var data_clean = data.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"')
+  var data_clean_arr = JSON.parse(data_clean);
+  console.log(typeof data_clean)
+  console.log(data_clean)
+
+  Highcharts.chart('container', {
+
+    title: {
+      text: 'Sarimo Smart Investor'
+    },
+    accessibility: {
+      point: {
+        descriptionFormatter: function (point) {
+          var index = point.index + 1,
+            from = point.from,
+            to = point.to,
+            weight = point.weight;
+          return index + '. ' + from + ' to ' + to + ', ' + weight + '.';
+        }
+      }
+    },
+    series: [{
+      keys: ['from', 'to', 'weight'],
+      data: data_clean_arr,
+      type: 'sankey',
+      name: 'Sankey demo series'
+    }]
+
+  });
+
+</script>
+
+</html>
